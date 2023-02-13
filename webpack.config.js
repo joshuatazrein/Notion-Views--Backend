@@ -3,6 +3,7 @@ module.exports = {
     filename: 'background.js'
   },
   mode: 'production',
+  devtool: 'inline-source-map',
   module: {
     rules: [
       {

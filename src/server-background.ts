@@ -1,18 +1,15 @@
 import cors from 'cors'
 import express from 'express'
-import { DataRequest, processRequest, MyApi } from './backgroundApi'
+import { processRequest } from './backgroundApi'
 import { GoogleAuth } from 'google-auth-library'
 import fs from 'fs'
+import keys from './keys.json'
+import { JSONClient } from 'google-auth-library/build/src/auth/googleauth'
+
+const SERVER = 'http://localhost:3001/server'
 
 const app = express()
-const port = process.env.PORT || 3001
-
-const api: MyApi = {
-  google: {
-    getAuthToken: async () => {}
-  },
-  btoa: data => Buffer.from(data).toString('base64')
-}
+const port = 3001
 
 var allowedDomains = ['capacitor://localhost', 'http://localhost:3000']
 app.use(
@@ -36,20 +33,57 @@ app.post('/server/request', async (req, res) => {
     const {
       type,
       action,
-      data
-    }: { type: string; action: string; data: DataRequest } = req.body
-    console.log('processing request:', type, action, data)
-    processRequest(
-      type,
-      action,
       data,
-      response => {
-        console.log('success with response', response)
-        res.status(200).send(response)
-      },
-      api
-    )
+      access_token
+    }: {
+      type: 'notion' | 'google' | 'auth'
+      action: string
+      data: Record<string, any>
+      access_token: string
+    } = req.body
+    console.log('processing request:', type, action, data, access_token)
+    if (type === 'auth') {
+      throw new Error("server backend doesn't handle Google tokens")
+    } else {
+      processRequest(
+        type,
+        action,
+        data,
+        response => {
+          console.log('success with response', response)
+          res.status(200).send(response)
+        },
+        access_token
+      )
+    }
   } catch (err) {
     res.status(400).send(err.message)
   }
 })
+
+// app.get('/server/sign_in/notion', async (req, res) => {
+//   try {
+//     console.log('queries:', req.query)
+//     const { code, redirect_uri } = req.query
+//     console.log('got code', code, redirect_uri)
+//     await processRequest(
+//       'auth',
+//       'notion.signIn',
+//       {
+//         code,
+//         redirect_uri: `${SERVER}/sign_in/notion`
+//       },
+//       response => {
+//         console.log('got response from tokens', response)
+//         res.status(200).send(response)
+//         // res.redirect(200, 'capacitor://localhost')
+//       },
+//       api
+//     )
+//   } catch (err) {
+//     console.log(err.message)
+//     res.status(400).send(err.message)
+//   }
+// })
+
+app.listen(port, () => console.log('listening on port', port))

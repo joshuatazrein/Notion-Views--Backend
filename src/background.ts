@@ -1,25 +1,34 @@
-import { DataRequest, processRequest, MyApi } from './backgroundApi'
-
-const api: MyApi = {
-  google: {
-    // @ts-ignore
-    getAuthToken: async () => await chrome.identity.getAuthToken()
-  },
-  btoa: (data: string) => btoa(data)
-}
+import { processRequest } from './backgroundApi'
 
 chrome.runtime.onMessage.addListener(
   (
     {
       type,
       action,
-      data
-    }: { type: string; action: string; data?: DataRequest },
+      data,
+      access_token
+    }: {
+      type: 'google' | 'notion' | 'auth'
+      action: string
+      data: Record<string, any>
+      access_token?: string
+    },
     sender,
     sendResponse
   ) => {
-    data.user_id = 'CHROME' // dummy ID for the purpose of the server API
-    processRequest(type, action, data, sendResponse, api)
+    if (type === 'auth') {
+      switch (action) {
+        case 'google.requestToken':
+          // prettier-ignore
+          // @ts-ignore
+          const token: { token; grantedScopes } | null = await chrome.identity.getAuthToken()
+          console.log('sign in to google with token:', token)
+          sendResponse(token?.token)
+          break
+      }
+    } else {
+      processRequest(type, action, data, sendResponse, access_token)
+    }
     return true
   }
 )

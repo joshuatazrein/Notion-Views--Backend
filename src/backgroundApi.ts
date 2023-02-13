@@ -2,36 +2,16 @@ import { Client as Notion, collectPaginatedAPI } from '@notionhq/client'
 import { TokenResponse } from 'google-auth-library/build/src/auth/impersonated'
 import { omit } from 'lodash'
 
-export type DataRequest = { access_token?: string } & Record<string, any>
-import keys from './keys.json'
-export type MyApi = {
-  google: {
-    getAuthToken:
-      | (() => Promise<void>)
-      | ((user_id: string) => Promise<TokenResponse>)
-  }
-  btoa: (data: string) => string
-}
-
 export const processRequest = async (
-  type: string,
+  type: 'google' | 'notion',
   action: string,
-  data: DataRequest,
-  sendResponse: (response?: any) => void,
-  api: MyApi
+  data: Record<string, any>,
+  sendResponse: (response?: Record<string, any>) => void,
+  access_token?: string
 ) => {
   let response: any
 
   if (type === 'google') {
-    // prettier-ignore
-    // @ts-ignore
-    const token: { token; grantedScopes } | null = await api.google.getAuthToken()
-
-    if (!token) {
-      sendResponse(undefined)
-      return
-    }
-
     const gRequest = async (
       url: string,
       method: string = 'GET',
@@ -48,7 +28,7 @@ export const processRequest = async (
         url + (params ? '?' + new URLSearchParams(params) : ''),
         {
           headers: {
-            Authorization: `Bearer ${token.token}`,
+            Authorization: `Bearer ${access_token}`,
             Accept: 'application/json',
             'Content-Type': 'application/json'
           },
@@ -56,12 +36,14 @@ export const processRequest = async (
           body: data ? JSON.stringify(data) : undefined
         }
       )
-      let result
+      let result: Record<string, any> | string
       try {
         result = f.json()
       } catch (err) {
         result = f
       }
+
+      // pass back the new tokens back to the app for storage
       return result
     }
 
@@ -70,7 +52,7 @@ export const processRequest = async (
         response = await gRequest(
           `https://www.googleapis.com/calendar/v3/calendars/${data.calendarId}/events`,
           'POST',
-          null,
+          undefined,
           data,
           ['calendarId']
         )
@@ -86,7 +68,7 @@ export const processRequest = async (
         response = await gRequest(
           `https://www.googleapis.com/calendar/v3/calendars/${data.calendarId}/events/${data.eventId}`,
           'PATCH',
-          null,
+          undefined,
           data,
           ['calendarId', 'eventId']
         )
@@ -113,40 +95,6 @@ export const processRequest = async (
 
         break
       default:
-        break
-    }
-  } else if (type === 'sign_in') {
-    switch (action) {
-      case 'notion':
-        if (!data) return
-
-        const basicHeader = api.btoa(
-          `${keys.notion.client_id}:${keys.notion.client_secret}`
-        )
-
-        response = (
-          await fetch('https://api.notion.com/v1/oauth/token', {
-            method: 'POST',
-            headers: {
-              Authorization: `Basic ${basicHeader}`,
-              Accept: 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              grant_type: 'authorization_code',
-              code: data.code,
-              redirect_uri: `https://hahgpoibcnamhkofphkaibhjcfogbkbl.chromiumapp.org`
-            })
-          })
-        ).json()
-        break
-      case 'google':
-        // TO DO: registration for Google-based stuff on the server
-        // prettier-ignore
-        // @ts-ignore
-        const token: { token; grantedScopes } | null = await api.google.getAuthToken()
-        console.log('sign in to google with token:', token)
-        response = token.token
         break
     }
   } else if (type === 'notion') {
@@ -190,5 +138,6 @@ export const processRequest = async (
         break
     }
   }
+
   sendResponse(response)
 }

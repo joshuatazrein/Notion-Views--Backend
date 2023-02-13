@@ -1,16 +1,13 @@
 {
   "google": {
-    "client_id": "671529192754-fhd7t6h5fs2o0s7eoi8b4ip7pl4dhj1s.apps.googleusercontent.com",
-    "project_id": "riverrun",
+    "client_id": "682242675225-uctooptcouo0ar6reobjn1m3q2hm2hr4.apps.googleusercontent.com",
+    "project_id": "riverrun-370806",
     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
     "token_uri": "https://oauth2.googleapis.com/token",
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_secret": "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",
-    "redirect_uris": [
-      "https://riverrun.app/success",
-      "http://localhost:3001/auth/access"
-    ],
-    "javascript_origins": ["https://riverrun.app", "https://localhost:3000"]
+    "client_secret": "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",
+    "redirect_uris": ["http://localhost:3001/server/request"],
+    "javascript_origins": ["http://localhost:3001"]
   },
   "notion": {
     "client_id": "096818fc-b9f3-4cf5-97f5-2554a97d97a9",
