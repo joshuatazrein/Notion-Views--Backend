@@ -5,6 +5,7 @@ import { GoogleAuth } from 'google-auth-library'
 import fs from 'fs'
 import keys from './keys.json'
 import { JSONClient } from 'google-auth-library/build/src/auth/googleauth'
+import { message } from '../../frontend/src/services/util'
 
 const SERVER = 'http://localhost:3001/server'
 
@@ -41,7 +42,6 @@ app.post('/server/request', async (req, res) => {
       data: Record<string, any>
       access_token: string
     } = req.body
-    console.log('processing request:', type, action, data, access_token)
     if (type === 'auth') {
       throw new Error("server backend doesn't handle Google tokens")
     } else {
@@ -50,7 +50,6 @@ app.post('/server/request', async (req, res) => {
         action,
         data,
         response => {
-          console.log('success with response', response)
           res.status(200).send(response)
         },
         access_token
@@ -86,4 +85,4 @@ app.post('/server/request', async (req, res) => {
 //   }
 // })
 
-app.listen(port, () => console.log('listening on port', port))
+app.listen(port, () => message('listening on port', port))

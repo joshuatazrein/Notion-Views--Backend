@@ -22,7 +22,6 @@ chrome.runtime.onMessage.addListener(
           // prettier-ignore
           // @ts-ignore
           const token: { token; grantedScopes } | null = await chrome.identity.getAuthToken()
-          console.log('sign in to google with token:', token)
           sendResponse(token?.token)
           break
       }
