@@ -5,7 +5,6 @@ import { GoogleAuth } from 'google-auth-library'
 import fs from 'fs'
 import keys from './keys.json'
 import { JSONClient } from 'google-auth-library/build/src/auth/googleauth'
-import { message } from '../../frontend/src/services/util'
 
 const SERVER = 'http://localhost:3001/server'
 
@@ -85,4 +84,4 @@ app.post('/server/request', async (req, res) => {
 //   }
 // })
 
-app.listen(port, () => message('listening on port', port))
+app.listen(port, () => console.log('listening on port', port))

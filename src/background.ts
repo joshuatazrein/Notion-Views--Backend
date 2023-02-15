@@ -11,22 +11,30 @@ chrome.runtime.onMessage.addListener(
       type: 'google' | 'notion' | 'auth'
       action: string
       data: Record<string, any>
-      access_token?: string
+      access_token: string
     },
     sender,
     sendResponse
   ) => {
     if (type === 'auth') {
       switch (action) {
-        case 'google.requestToken':
-          // prettier-ignore
-          // @ts-ignore
-          const token: { token; grantedScopes } | null = await chrome.identity.getAuthToken()
-          sendResponse(token?.token)
+        case 'google.getToken':
+          chrome.identity.getAuthToken({}, token => {
+            console.log('token is', token)
+            sendResponse(token)
+          })
           break
       }
     } else {
-      processRequest(type, action, data, sendResponse, access_token)
+      if (access_token === 'GOOGLE_TOKEN') {
+        // pass in a dummy for the Chrome extension
+        chrome.identity.getAuthToken({}, access_token => {
+          console.log('got access token:', access_token, 'for request:', action)
+          processRequest(type, action, data, sendResponse, access_token)
+        })
+      } else {
+        processRequest(type, action, data, sendResponse, access_token)
+      }
     }
     return true
   }
