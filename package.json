@@ -2,8 +2,7 @@
   "name": "chrome",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "type": "module",
+  "main": "dist/server-background.mjs",
   "scripts": {
     "start": "node dist/server-background.mjs",
     "start-ts": "ts-node-esm src/server-background.mts",
