@@ -8,5 +8,5 @@
     "resolveJsonModule": true,
     "outDir": "dist"
   },
-  "include": ["src/*.mts"]
+  "include": ["src/*"]
 }

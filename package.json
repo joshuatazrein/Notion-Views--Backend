@@ -5,8 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "ts-node-esm src/server-background.mts",
-    "build": "webpack ./src/background.mts"
+    "start": "node dist/server-background.mjs",
+    "start-ts": "ts-node-esm src/server-background.mts",
+    "build": "webpack ./src/background.mts",
+    "ts": "tsc"
   },
   "browserify": {
     "transform": [
