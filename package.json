@@ -4,11 +4,11 @@
   "description": "",
   "main": "dist/server-background.mjs",
   "scripts": {
-    "start": "node dist/server-background.mjs",
+    "start": "node server/server-background.js",
     "start-ts": "ts-node-esm src/server-background.mts",
     "build": "webpack ./src/background.mts",
     "build-ts": "tsc",
-    "build-babel": "babel src --out-dir server --extensions \".mts\""
+    "build-babel": "babel src --out-dir server --extensions \".ts\""
   },
   "browserify": {
     "transform": [

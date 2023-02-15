@@ -2,7 +2,7 @@
 
 var _cors = _interopRequireDefault(require("cors"));
 var _express = _interopRequireDefault(require("express"));
-var _backgroundApi = require("./backgroundApi.mjs");
+var _backgroundApi = require("./backgroundApi.js");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 const SERVER = 'http://localhost:3001/server';
 const app = (0, _express.default)();

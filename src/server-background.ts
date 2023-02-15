@@ -1,6 +1,6 @@
 import cors from 'cors'
 import express from 'express'
-import { processRequest } from './backgroundApi.mjs'
+import { processRequest } from './backgroundApi.js'
 import { GoogleAuth } from 'google-auth-library'
 import fs from 'fs'
 import keys from './keys.json'
