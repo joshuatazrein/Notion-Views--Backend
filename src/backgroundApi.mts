@@ -1,6 +1,6 @@
 import { Client as Notion, collectPaginatedAPI } from '@notionhq/client'
 import { TokenResponse } from 'google-auth-library/build/src/auth/impersonated'
-import { omit } from 'lodash'
+import _ from 'lodash'
 
 export const processRequest = async (
   type: 'google' | 'notion',
@@ -21,7 +21,7 @@ export const processRequest = async (
     ) => {
       {
         if (stripKeys && data) {
-          data = omit(data, stripKeys)
+          data = _.omit(data, stripKeys)
         }
       }
       const f = await fetch(

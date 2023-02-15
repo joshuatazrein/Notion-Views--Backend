@@ -7,7 +7,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.ts$/,
+        test: /\.mts$/,
         loader: 'ts-loader'
       }
     ]

@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "ts-node-esm src/server-background.ts",
-    "build": "webpack ./src/background.ts",
-    "build-ts": "tsc"
+    "start": "ts-node-esm src/server-background.mts",
+    "build": "webpack ./src/background.mts"
   },
   "browserify": {
     "transform": [
@@ -36,6 +36,7 @@
     "typescript": "^4.9.3"
   },
   "devDependencies": {
+    "ts-node": "^10.9.1",
     "@babel/core": "^7.20.5",
     "@types/chrome": "^0.0.212",
     "@types/cors": "^2.8.13",
