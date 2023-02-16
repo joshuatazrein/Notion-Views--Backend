@@ -1,6 +1,7 @@
 import { Client as Notion, collectPaginatedAPI } from '@notionhq/client'
 import { TokenResponse } from 'google-auth-library/build/src/auth/impersonated'
 import _ from 'lodash'
+import { stderr } from 'process'
 
 export const processRequest = async (
   type: 'google' | 'notion',
@@ -40,6 +41,11 @@ export const processRequest = async (
       try {
         result = f.json()
       } catch (err) {
+        stderr.write(
+          `\nERROR AT ${new Date().toDateString()}: ${
+            err.message
+          }, from request ${action} with data:\n    ${JSON.stringify(data)}`
+        )
         result = f
       }
 

@@ -61,9 +61,7 @@ app.post('/server/request', async (req, res) => {
 
 // app.get('/server/sign_in/notion', async (req, res) => {
 //   try {
-//     console.log('queries:', req.query)
 //     const { code, redirect_uri } = req.query
-//     console.log('got code', code, redirect_uri)
 //     await processRequest(
 //       'auth',
 //       'notion.signIn',
@@ -72,14 +70,12 @@ app.post('/server/request', async (req, res) => {
 //         redirect_uri: `${SERVER}/sign_in/notion`
 //       },
 //       response => {
-//         console.log('got response from tokens', response)
 //         res.status(200).send(response)
 //         // res.redirect(200, 'capacitor://localhost')
 //       },
 //       api
 //     )
 //   } catch (err) {
-//     console.log(err.message)
 //     res.status(400).send(err.message)
 //   }
 // })
