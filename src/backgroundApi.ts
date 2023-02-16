@@ -44,10 +44,11 @@ export const processRequest = async (
         )
 
         let result: Record<string, any> | string
+        const textResponse = await f.text()
         try {
-          result = f.json()
+          result = JSON.parse(textResponse)
         } catch (err) {
-          result = f
+          result = textResponse
         }
 
         // pass back the new tokens back to the app for storage

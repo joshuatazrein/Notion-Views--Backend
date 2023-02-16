@@ -11,7 +11,7 @@ chrome.runtime.onMessage.addListener(
       type: 'google' | 'notion' | 'auth'
       action: string
       data: Record<string, any>
-      access_token: string
+      access_token?: string
     },
     sender,
     sendResponse

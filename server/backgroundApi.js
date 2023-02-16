@@ -31,10 +31,11 @@ const processRequest = async (type, action, data, sendResponse, fetchFunction, a
           body: data ? JSON.stringify(data) : undefined
         });
         let result;
+        const textResponse = await f.text();
         try {
-          result = f.json();
+          result = JSON.parse(textResponse);
         } catch (err) {
-          result = f;
+          result = textResponse;
         }
 
         // pass back the new tokens back to the app for storage

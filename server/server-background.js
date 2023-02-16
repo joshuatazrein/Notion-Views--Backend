@@ -4,6 +4,7 @@ var _cors = _interopRequireDefault(require("cors"));
 var _express = _interopRequireDefault(require("express"));
 var _backgroundApi = require("./backgroundApi.js");
 var _nodeFetch = _interopRequireDefault(require("node-fetch"));
+var _process = require("process");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 // backports to older version of node
 
@@ -36,6 +37,7 @@ app.post('/server/request', async (req, res) => {
       throw new Error("server backend doesn't handle Google tokens");
     } else {
       (0, _backgroundApi.processRequest)(type, action, data, response => {
+        _process.stdout.write('\n\nGOT RESPONSE: ' + JSON.stringify(response));
         res.status(200).send(response);
       },
       // @ts-ignore
