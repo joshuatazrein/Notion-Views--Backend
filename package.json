@@ -36,6 +36,7 @@
     "gapi-script": "^1.2.0",
     "google-auth-library": "^8.7.0",
     "lodash": "^4.17.21",
+    "node-fetch": "^3.3.0",
     "typescript": "^4.9.3"
   },
   "devDependencies": {

@@ -3,8 +3,12 @@
 var _cors = _interopRequireDefault(require("cors"));
 var _express = _interopRequireDefault(require("express"));
 var _backgroundApi = require("./backgroundApi.js");
+var _nodeFetch = _interopRequireDefault(require("node-fetch"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-const SERVER = 'http://localhost:3001/server';
+// backports to older version of node
+
+// const SERVER = 'http://localhost:3001/server'
+const SERVER = 'https://riverrun.app/server';
 const app = (0, _express.default)();
 const port = 3001;
 var allowedDomains = ['capacitor://localhost', 'http://localhost:3000'];
@@ -33,7 +37,9 @@ app.post('/server/request', async (req, res) => {
     } else {
       (0, _backgroundApi.processRequest)(type, action, data, response => {
         res.status(200).send(response);
-      }, access_token);
+      },
+      // @ts-ignore
+      _nodeFetch.default, access_token);
     }
   } catch (err) {
     res.status(400).send(err.message);

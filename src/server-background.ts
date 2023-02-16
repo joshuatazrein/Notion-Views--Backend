@@ -1,12 +1,10 @@
 import cors from 'cors'
 import express from 'express'
 import { processRequest } from './backgroundApi.js'
-import { GoogleAuth } from 'google-auth-library'
-import fs from 'fs'
-import keys from './keys.json'
-import { JSONClient } from 'google-auth-library/build/src/auth/googleauth'
+import fetch from 'node-fetch' // backports to older version of node
 
-const SERVER = 'http://localhost:3001/server'
+// const SERVER = 'http://localhost:3001/server'
+const SERVER = 'https://riverrun.app/server'
 
 const app = express()
 const port = 3001
@@ -51,6 +49,8 @@ app.post('/server/request', async (req, res) => {
         response => {
           res.status(200).send(response)
         },
+        // @ts-ignore
+        fetch,
         access_token
       )
     }

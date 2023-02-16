@@ -8,8 +8,11 @@ var _client = require("@notionhq/client");
 var _lodash = _interopRequireDefault(require("lodash"));
 var _process = require("process");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-const processRequest = async (type, action, data, sendResponse, access_token) => {
+const processRequest = async (type, action, data, sendResponse, fetchFunction, access_token) => {
   let response;
+  if (!fetchFunction) {
+    fetchFunction = fetch;
+  }
   if (type === 'google') {
     const gRequest = async (url, method = 'GET', params, data, stripKeys) => {
       {
@@ -18,7 +21,7 @@ const processRequest = async (type, action, data, sendResponse, access_token) =>
         }
       }
       try {
-        const f = await fetch(url + (params ? '?' + new URLSearchParams(params) : ''), {
+        const f = await fetchFunction(url + (params ? '?' + new URLSearchParams(params) : ''), {
           headers: {
             Authorization: `Bearer ${access_token}`,
             Accept: 'application/json',

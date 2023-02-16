@@ -8,9 +8,13 @@ export const processRequest = async (
   action: string,
   data: Record<string, any>,
   sendResponse: (response?: Record<string, any>) => void,
+  fetchFunction: typeof fetch,
   access_token?: string
 ) => {
   let response: any
+  if (!fetchFunction) {
+    fetchFunction = fetch
+  }
 
   if (type === 'google') {
     const gRequest = async (
@@ -26,7 +30,7 @@ export const processRequest = async (
         }
       }
       try {
-        const f = await fetch(
+        const f = await fetchFunction(
           url + (params ? '?' + new URLSearchParams(params) : ''),
           {
             headers: {
