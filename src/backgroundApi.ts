@@ -25,32 +25,37 @@ export const processRequest = async (
           data = _.omit(data, stripKeys)
         }
       }
-      const f = await fetch(
-        url + (params ? '?' + new URLSearchParams(params) : ''),
-        {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-          },
-          method,
-          body: data ? JSON.stringify(data) : undefined
-        }
-      )
-      let result: Record<string, any> | string
       try {
-        result = f.json()
+        const f = await fetch(
+          url + (params ? '?' + new URLSearchParams(params) : ''),
+          {
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            },
+            method,
+            body: data ? JSON.stringify(data) : undefined
+          }
+        )
+
+        let result: Record<string, any> | string
+        try {
+          result = f.json()
+        } catch (err) {
+          result = f
+        }
+
+        // pass back the new tokens back to the app for storage
+        return result
       } catch (err) {
         stderr.write(
           `\nERROR AT ${new Date().toDateString()}: ${
             err.message
           }, from request ${action} with data:\n    ${JSON.stringify(data)}`
         )
-        result = f
+        return 'ERROR: ' + err.message
       }
-
-      // pass back the new tokens back to the app for storage
-      return result
     }
 
     switch (action) {

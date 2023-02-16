@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.processRequest = void 0;
 var _client = require("@notionhq/client");
 var _lodash = _interopRequireDefault(require("lodash"));
+var _process = require("process");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 const processRequest = async (type, action, data, sendResponse, access_token) => {
   let response;
@@ -16,24 +17,29 @@ const processRequest = async (type, action, data, sendResponse, access_token) =>
           data = _lodash.default.omit(data, stripKeys);
         }
       }
-      const f = await fetch(url + (params ? '?' + new URLSearchParams(params) : ''), {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        method,
-        body: data ? JSON.stringify(data) : undefined
-      });
-      let result;
       try {
-        result = f.json();
-      } catch (err) {
-        result = f;
-      }
+        const f = await fetch(url + (params ? '?' + new URLSearchParams(params) : ''), {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          },
+          method,
+          body: data ? JSON.stringify(data) : undefined
+        });
+        let result;
+        try {
+          result = f.json();
+        } catch (err) {
+          result = f;
+        }
 
-      // pass back the new tokens back to the app for storage
-      return result;
+        // pass back the new tokens back to the app for storage
+        return result;
+      } catch (err) {
+        _process.stderr.write(`\nERROR AT ${new Date().toDateString()}: ${err.message}, from request ${action} with data:\n    ${JSON.stringify(data)}`);
+        return 'ERROR: ' + err.message;
+      }
     };
     switch (action) {
       case 'events.insert':

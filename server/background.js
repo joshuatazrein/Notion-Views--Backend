@@ -10,17 +10,13 @@ chrome.runtime.onMessage.addListener(({
   if (type === 'auth') {
     switch (action) {
       case 'google.getToken':
-        chrome.identity.getAuthToken({}, token => {
-          console.log('token is', token);
-          sendResponse(token);
-        });
+        chrome.identity.getAuthToken({}, token => sendResponse(token));
         break;
     }
   } else {
     if (access_token === 'GOOGLE_TOKEN') {
       // pass in a dummy for the Chrome extension
       chrome.identity.getAuthToken({}, access_token => {
-        console.log('got access token:', access_token, 'for request:', action);
         (0, _backgroundApi.processRequest)(type, action, data, sendResponse, access_token);
       });
     } else {
