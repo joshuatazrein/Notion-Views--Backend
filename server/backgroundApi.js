@@ -10,9 +10,6 @@ var _process = require("process");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 const processRequest = async (type, action, data, sendResponse, fetchFunction, access_token) => {
   let response;
-  if (!fetchFunction) {
-    fetchFunction = fetch;
-  }
   if (type === 'google') {
     const gRequest = async (url, method = 'GET', params, data, stripKeys) => {
       {

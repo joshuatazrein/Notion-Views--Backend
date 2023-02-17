@@ -12,9 +12,6 @@ export const processRequest = async (
   access_token?: string
 ) => {
   let response: any
-  if (!fetchFunction) {
-    fetchFunction = fetch
-  }
 
   if (type === 'google') {
     const gRequest = async (

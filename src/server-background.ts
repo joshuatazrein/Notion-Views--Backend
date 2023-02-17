@@ -2,7 +2,7 @@ import cors from 'cors'
 import express from 'express'
 import { processRequest } from './backgroundApi.js'
 import fetch from 'node-fetch' // backports to older version of node
-import { stdout } from 'process'
+import { stdout, stderr } from 'process'
 
 // const SERVER = 'http://localhost:3001/server'
 const SERVER = 'https://riverrun.app/server'
@@ -57,6 +57,7 @@ app.post('/server/request', async (req, res) => {
       )
     }
   } catch (err) {
+    stderr.write(err.message)
     res.status(400).send(err.message)
   }
 })

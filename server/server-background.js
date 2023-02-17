@@ -44,6 +44,7 @@ app.post('/server/request', async (req, res) => {
       _nodeFetch.default, access_token);
     }
   } catch (err) {
+    _process.stderr.write(err.message);
     res.status(400).send(err.message);
   }
 });
