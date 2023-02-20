@@ -10,18 +10,6 @@
     "build-ts": "tsc",
     "build-babel": "babel src --out-dir server --extensions \".ts\""
   },
-  "browserify": {
-    "transform": [
-      [
-        "babelify",
-        {
-          "presets": [
-            "es2015"
-          ]
-        }
-      ]
-    ]
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
