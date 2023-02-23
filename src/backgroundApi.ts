@@ -112,8 +112,6 @@ export const processRequest = async (
     }
   } else if (type === 'notion') {
     let notion: Notion
-
-    const access_token = data.access_token
     notion = new Notion({
       auth: access_token
     })

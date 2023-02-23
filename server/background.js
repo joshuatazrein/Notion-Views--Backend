@@ -15,10 +15,7 @@ chrome.runtime.onMessage.addListener(({
     }
   } else {
     if (access_token === 'GOOGLE_TOKEN') {
-      // pass in a dummy for the Chrome extension
-      chrome.identity.getAuthToken({}, access_token => {
-        (0, _backgroundApi.processRequest)(type, action, data, sendResponse, fetch, access_token);
-      });
+      chrome.identity.getAuthToken({}, access_token => (0, _backgroundApi.processRequest)(type, action, data, sendResponse, fetch, access_token));
     } else {
       (0, _backgroundApi.processRequest)(type, action, data, sendResponse, fetch, access_token);
     }

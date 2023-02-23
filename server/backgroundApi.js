@@ -71,7 +71,6 @@ const processRequest = async (type, action, data, sendResponse, fetchFunction, a
     }
   } else if (type === 'notion') {
     let notion;
-    const access_token = data.access_token;
     notion = new _client.Client({
       auth: access_token
     });
