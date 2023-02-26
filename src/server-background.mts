@@ -8,8 +8,10 @@ import { OAuth2Client } from 'google-auth-library'
 
 const keys = JSON.parse(readFileSync('./keys.json').toString('utf-8'))
 
-const SERVER = 'http://localhost:3001/server'
-// const SERVER = 'https://riverrun.app/server'
+const SERVER =
+  process.env.MODE === 'PRODUCTION'
+    ? 'https://riverrun.app/server'
+    : 'http://localhost:3001/server'
 
 var exports = {}
 
@@ -155,4 +157,4 @@ app.get('/server/sign-in/google', async (req, res) => {
   }
 })
 
-app.listen(port, () => console.log('listening on port', port))
+app.listen(port, () => console.log('listening on port', port, 'from', SERVER))

@@ -11,9 +11,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // backports to older version of node
 
 const keys = JSON.parse((0, _fs.readFileSync)('./keys.json').toString('utf-8'));
-const SERVER = 'http://localhost:3001/server';
-// const SERVER = 'https://riverrun.app/server'
-
+const SERVER = process.env.MODE === 'PRODUCTION' ? 'https://riverrun.app/server' : 'http://localhost:3001/server';
 var _exports = {};
 const app = (0, _express.default)();
 const port = 3001;
@@ -105,4 +103,4 @@ app.get('/server/sign-in/google', async (req, res) => {
     res.status(400).send(err.message);
   }
 });
-app.listen(port, () => console.log('listening on port', port));
+app.listen(port, () => console.log('listening on port', port, 'from', SERVER));
