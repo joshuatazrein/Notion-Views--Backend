@@ -1,13 +1,12 @@
 {
-  "extends": "@tsconfig/node16/tsconfig.json",
-  "ts-node": {
-    "transpileOnly": true
-  },
   "compilerOptions": {
     "target": "ES6",
-    "module": "NodeNext",
+    "module": "ES6",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "noImplicitAny": false,
     "resolveJsonModule": true,
-    "noImplicitAny": false
+    "outDir": "dist"
   },
-  "include": ["src/*.ts"]
+  "include": ["src/*"]
 }

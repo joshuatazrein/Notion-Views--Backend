@@ -1,5 +1,5 @@
-import { processRequest } from './backgroundApi.js'
-import keys from './keys.json'
+import { processRequest } from './backgroundApi.mjs'
+import keys from '../keys.json'
 
 chrome.runtime.onMessage.addListener(
   (

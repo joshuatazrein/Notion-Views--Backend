@@ -1,5 +1,4 @@
 import { Client as Notion, collectPaginatedAPI } from '@notionhq/client'
-import { TokenResponse } from 'google-auth-library/build/src/auth/impersonated'
 import _ from 'lodash'
 import { stderr } from 'process'
 

@@ -1,7 +1,7 @@
 "use strict";
 
 var _backgroundApi = require("./backgroundApi.js");
-var _keys = _interopRequireDefault(require("./keys.json"));
+var _keys = _interopRequireDefault(require("../keys.json"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 chrome.runtime.onMessage.addListener(({
   type,

@@ -2,17 +2,19 @@
 
 var _cors = _interopRequireDefault(require("cors"));
 var _express = _interopRequireDefault(require("express"));
-var _backgroundApi = require("./backgroundApi");
+var _fs = require("fs");
 var _nodeFetch = _interopRequireDefault(require("node-fetch"));
 var _process = require("process");
-var _keys = _interopRequireDefault(require("./keys.json"));
+var _backgroundApi = require("./backgroundApi.js");
+var _googleAuthLibrary = require("google-auth-library");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 // backports to older version of node
 
-const CLIENT = 'http://localhost:3000';
-// const CLIENT = 'https://riverrun.app'
-// const CLIENT = 'capacitor://localhost'
+const keys = JSON.parse((0, _fs.readFileSync)('./keys.json').toString('utf-8'));
+const SERVER = 'http://localhost:3001/server';
+// const SERVER = 'https://riverrun.app/server'
 
+var _exports = {};
 const app = (0, _express.default)();
 const port = 3001;
 var allowedDomains = ['capacitor://localhost', 'http://localhost:3000', 'https://api.notion.com'];
@@ -55,9 +57,10 @@ app.get('/server/sign-in/notion', async (req, res) => {
   try {
     const {
       code,
-      redirect_uri
+      state
     } = req.query;
-    const basicHeader = Buffer.from(`${_keys.default.notion.client_id}:${_keys.default.notion.client_secret}`, 'utf-8').toString('base64');
+    const basicHeader = Buffer.from(`${keys.notion.client_id}:${keys.notion.client_secret}`, 'utf-8').toString('base64');
+    console.log('got stuff:', code, state);
     (0, _nodeFetch.default)('https://api.notion.com/v1/oauth/token', {
       method: 'POST',
       headers: {
@@ -68,17 +71,37 @@ app.get('/server/sign-in/notion', async (req, res) => {
       body: JSON.stringify({
         grant_type: 'authorization_code',
         code,
-        redirect_uri
+        redirect_uri: SERVER + '/sign-in/notion'
       })
     }).then(async token => {
-      console.log('got the thing');
-      const notion_tokens = await token.text();
+      const notion_tokens = await token.text(); // pass on JSON string
       console.log('got token', notion_tokens);
-      res.redirect(`${CLIENT}?notion_tokens=${notion_tokens}`);
+      res.redirect(`${state === 'mobile' ? 'capacitor://localhost' : state === 'web' ? 'https://riverrun.app' : state === 'localhost' ? 'http://localhost:3000' : 'ERROR'}?notion_tokens=${notion_tokens}`);
     }, error => {
       console.log(error.message);
     });
   } catch (err) {
+    console.log(err.message);
+    res.status(400).send(err.message);
+  }
+});
+app.get('/server/sign-in/google', async (req, res) => {
+  try {
+    const {
+      code,
+      state
+    } = req.query;
+    const oAuth2Client = new _googleAuthLibrary.OAuth2Client(keys.google.client_id, keys.google.client_secret, SERVER + '/sign-in/google');
+    const token = await oAuth2Client.getToken(code);
+    console.log('got tokens:', token);
+    const formattedTokens = {
+      access_token: token.tokens.access_token,
+      refresh_token: token.tokens.refresh_token,
+      expire_time: token.tokens.expiry_date
+    };
+    res.redirect(`${state === 'mobile' ? 'capacitor://localhost' : state === 'web' ? 'https://riverrun.app' : state === 'localhost' ? 'http://localhost:3000' : 'ERROR'}?google_tokens=${JSON.stringify(formattedTokens)}`);
+  } catch (err) {
+    console.log(err.message);
     res.status(400).send(err.message);
   }
 });
