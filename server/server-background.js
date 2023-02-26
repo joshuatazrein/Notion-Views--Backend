@@ -2,17 +2,20 @@
 
 var _cors = _interopRequireDefault(require("cors"));
 var _express = _interopRequireDefault(require("express"));
-var _backgroundApi = require("./backgroundApi.js");
+var _backgroundApi = require("./backgroundApi");
 var _nodeFetch = _interopRequireDefault(require("node-fetch"));
 var _process = require("process");
+var _keys = _interopRequireDefault(require("./keys.json"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 // backports to older version of node
 
-// const SERVER = 'http://localhost:3001/server'
-const SERVER = 'https://riverrun.app/server';
+const CLIENT = 'http://localhost:3000';
+// const CLIENT = 'https://riverrun.app'
+// const CLIENT = 'capacitor://localhost'
+
 const app = (0, _express.default)();
 const port = 3001;
-var allowedDomains = ['capacitor://localhost', 'http://localhost:3000'];
+var allowedDomains = ['capacitor://localhost', 'http://localhost:3000', 'https://api.notion.com'];
 app.use((0, _cors.default)({
   origin: function (origin, callback) {
     // bypass the requests with no origin (like curl requests, mobile apps, etc )
@@ -48,26 +51,35 @@ app.post('/server/request', async (req, res) => {
     res.status(400).send(err.message);
   }
 });
-
-// app.get('/server/sign_in/notion', async (req, res) => {
-//   try {
-//     const { code, redirect_uri } = req.query
-//     await processRequest(
-//       'auth',
-//       'notion.signIn',
-//       {
-//         code,
-//         redirect_uri: `${SERVER}/sign_in/notion`
-//       },
-//       response => {
-//         res.status(200).send(response)
-//         // res.redirect(200, 'capacitor://localhost')
-//       },
-//       api
-//     )
-//   } catch (err) {
-//     res.status(400).send(err.message)
-//   }
-// })
-
+app.get('/server/sign-in/notion', async (req, res) => {
+  try {
+    const {
+      code,
+      redirect_uri
+    } = req.query;
+    const basicHeader = Buffer.from(`${_keys.default.notion.client_id}:${_keys.default.notion.client_secret}`, 'utf-8').toString('base64');
+    (0, _nodeFetch.default)('https://api.notion.com/v1/oauth/token', {
+      method: 'POST',
+      headers: {
+        Authorization: `Basic ${basicHeader}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        grant_type: 'authorization_code',
+        code,
+        redirect_uri
+      })
+    }).then(async token => {
+      console.log('got the thing');
+      const notion_tokens = await token.text();
+      console.log('got token', notion_tokens);
+      res.redirect(`${CLIENT}?notion_tokens=${notion_tokens}`);
+    }, error => {
+      console.log(error.message);
+    });
+  } catch (err) {
+    res.status(400).send(err.message);
+  }
+});
 app.listen(port, () => console.log('listening on port', port));

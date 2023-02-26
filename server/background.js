@@ -1,6 +1,8 @@
 "use strict";
 
-var _backgroundApi = require("./backgroundApi");
+var _backgroundApi = require("./backgroundApi.js");
+var _keys = _interopRequireDefault(require("./keys.json"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 chrome.runtime.onMessage.addListener(({
   type,
   action,
@@ -9,6 +11,31 @@ chrome.runtime.onMessage.addListener(({
 }, sender, sendResponse) => {
   if (type === 'auth') {
     switch (action) {
+      case 'notion.getToken':
+        const basicHeader = btoa(`${_keys.default.notion.client_id}:${_keys.default.notion.client_secret}`);
+        fetch('https://api.notion.com/v1/oauth/token', {
+          method: 'POST',
+          headers: {
+            Authorization: `Basic ${basicHeader}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            grant_type: 'authorization_code',
+            code: data.code,
+            redirect_uri: `https://hahgpoibcnamhkofphkaibhjcfogbkbl.chromiumapp.org`
+          })
+        }).then(async token => {
+          console.log('got the thing');
+          const notion_tokens = await token.json();
+          console.log('got token');
+          sendResponse({
+            notion_tokens
+          });
+        }, error => {
+          console.log(error.message);
+        });
+        break;
       case 'google.getToken':
         chrome.identity.getAuthToken({}, token => sendResponse(token));
         break;
