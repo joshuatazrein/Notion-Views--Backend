@@ -9,7 +9,7 @@ import { OAuth2Client } from 'google-auth-library'
 const keys = JSON.parse(readFileSync('./keys.json').toString('utf-8'))
 
 const SERVER =
-  process.env.MODE === 'PRODUCTION'
+  process.env.NODE_ENV === 'PRODUCTION'
     ? 'https://riverrun.app/server'
     : 'http://localhost:3001/server'
 

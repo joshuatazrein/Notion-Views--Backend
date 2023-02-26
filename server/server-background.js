@@ -11,7 +11,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // backports to older version of node
 
 const keys = JSON.parse((0, _fs.readFileSync)('./keys.json').toString('utf-8'));
-const SERVER = process.env.MODE === 'PRODUCTION' ? 'https://riverrun.app/server' : 'http://localhost:3001/server';
+const SERVER = process.env.NODE_ENV === 'PRODUCTION' ? 'https://riverrun.app/server' : 'http://localhost:3001/server';
 var _exports = {};
 const app = (0, _express.default)();
 const port = 3001;
