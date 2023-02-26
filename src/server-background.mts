@@ -9,7 +9,7 @@ import { OAuth2Client } from 'google-auth-library'
 const keys = JSON.parse(readFileSync('./keys.json').toString('utf-8'))
 
 const SERVER =
-  process.env.NODE_ENV === 'PRODUCTION'
+  process.env.NODE_ENV === 'PRODUCTION' || process.env.NODE_ENV === 'Production'
     ? 'https://riverrun.app/server'
     : 'http://localhost:3001/server'
 
@@ -21,7 +21,8 @@ const port = 3001
 var allowedDomains = [
   'capacitor://localhost',
   'http://localhost:3000',
-  'https://api.notion.com'
+  'https://api.notion.com',
+  'https://riverrun.app'
 ]
 
 app.use(
